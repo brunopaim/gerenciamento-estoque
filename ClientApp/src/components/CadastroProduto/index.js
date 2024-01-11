@@ -8,9 +8,11 @@ import {
   TextField,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import useProdutoStore from "../../store"; // Importa o estado global de produtos
 
 const CadastroProdutos = () => {
-  const [produtos, setProdutos] = useState([]);
+  const { produtos, setProdutos, adicionarProduto } = useProdutoStore();
+
   const [openDialog, setOpenDialog] = useState(false);
   const [novoProduto, setNovoProduto] = useState({
     nome: "",
@@ -24,7 +26,7 @@ const CadastroProdutos = () => {
       .then((response) => response.json())
       .then((data) => setProdutos(data))
       .catch((error) => console.error("Erro ao obter produtos:", error));
-  }, []);
+  }, [setProdutos]);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -32,7 +34,6 @@ const CadastroProdutos = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    // Limpar os campos do formulário ao fechar o popup
     setNovoProduto({
       nome: "",
       peso: 0,
@@ -50,7 +51,6 @@ const CadastroProdutos = () => {
   };
 
   const handleAdicionarProduto = () => {
-    // Fazer a requisição POST para a rota "api/Produto"
     fetch("/api/Produto", {
       method: "POST",
       headers: {
@@ -61,7 +61,7 @@ const CadastroProdutos = () => {
       .then((response) => response.json())
       .then((data) => {
         // Atualizar a lista de produtos após adicionar um novo
-        setProdutos([...produtos, data]);
+        adicionarProduto(data);
         // Fechar o popup
         handleCloseDialog();
       })
