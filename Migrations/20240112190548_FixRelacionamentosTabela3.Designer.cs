@@ -2,18 +2,19 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using gerenciamento_estoque.Data;
-using gerenciamento_estoque.Models;
 
 #nullable disable
 
 namespace gerenciamento_estoque.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    partial class ProdutoContextModelSnapshot : ModelSnapshot
+    [Migration("20240112190548_FixRelacionamentosTabela3")]
+    partial class FixRelacionamentosTabela3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,21 +167,6 @@ namespace gerenciamento_estoque.Migrations
                     b.Navigation("ProdutoEntrada");
                 });
 #pragma warning restore 612, 618
-
-            // Preencher o MapaEstoque com os valores padrões
-            for (int linha = 1; linha <= 5; linha++)
-            {
-                for (int coluna = 1; coluna <= 5; coluna++)
-                {
-                    modelBuilder.Entity<MapaEstoque>().HasData(new MapaEstoque
-                    {
-                        MapaEstoqueId = (linha - 1) * 5 + coluna,
-                        Linha = linha,
-                        Coluna = coluna,
-                        CapacidadeMaxima = 100
-                    });
-                }
-            }
         }
     }
 }
