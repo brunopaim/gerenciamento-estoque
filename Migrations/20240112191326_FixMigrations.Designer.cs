@@ -11,8 +11,8 @@ using gerenciamento_estoque.Data;
 namespace gerenciamento_estoque.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    [Migration("20240108203326_AllModels")]
-    partial class AllModels
+    [Migration("20240112191326_FixMigrations")]
+    partial class FixMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,25 +20,6 @@ namespace gerenciamento_estoque.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("gerenciamento_estoque.Models.Categoria", b =>
-                {
-                    b.Property<int>("CategoriaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("CategoriaId");
-
-                    b.ToTable("Categorias");
-                });
 
             modelBuilder.Entity("gerenciamento_estoque.Models.EntradaMercadoria", b =>
                 {
@@ -48,6 +29,10 @@ namespace gerenciamento_estoque.Migrations
 
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("NomeUsuario")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NumeroEntrada")
                         .IsRequired()
@@ -89,12 +74,13 @@ namespace gerenciamento_estoque.Migrations
 
             modelBuilder.Entity("gerenciamento_estoque.Models.Produto", b =>
                 {
-                    b.Property<int>("ProdutoID")
+                    b.Property<int>("ProdutoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("Nome")
-                        .HasColumnType("int");
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("Peso")
                         .HasColumnType("decimal(65,30)");
@@ -105,33 +91,9 @@ namespace gerenciamento_estoque.Migrations
                     b.Property<decimal>("VolumeCubico")
                         .HasColumnType("decimal(65,30)");
 
-                    b.HasKey("ProdutoID");
+                    b.HasKey("ProdutoId");
 
                     b.ToTable("Produtos");
-                });
-
-            modelBuilder.Entity("gerenciamento_estoque.Models.ProdutoArmazenado", b =>
-                {
-                    b.Property<int>("ProdutoArmazenadoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("MapaEstoqueId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuantidadeArmazenada")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProdutoArmazenadoId");
-
-                    b.HasIndex("MapaEstoqueId");
-
-                    b.HasIndex("ProdutoId");
-
-                    b.ToTable("ProdutosArmazenados");
                 });
 
             modelBuilder.Entity("gerenciamento_estoque.Models.ProdutoEntrada", b =>
@@ -141,6 +103,9 @@ namespace gerenciamento_estoque.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("EntradaMercadoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MapaEstoqueId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Peso")
@@ -162,15 +127,23 @@ namespace gerenciamento_estoque.Migrations
 
                     b.HasIndex("EntradaMercadoriaId");
 
+                    b.HasIndex("MapaEstoqueId");
+
                     b.HasIndex("ProdutoId");
 
                     b.ToTable("ProdutosEntradas");
                 });
 
-            modelBuilder.Entity("gerenciamento_estoque.Models.ProdutoArmazenado", b =>
+            modelBuilder.Entity("gerenciamento_estoque.Models.ProdutoEntrada", b =>
                 {
-                    b.HasOne("gerenciamento_estoque.Models.MapaEstoque", "MapaEstoque")
-                        .WithMany("ProdutosArmazenados")
+                    b.HasOne("gerenciamento_estoque.Models.EntradaMercadoria", null)
+                        .WithMany("ProdutosEntrada")
+                        .HasForeignKey("EntradaMercadoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("gerenciamento_estoque.Models.MapaEstoque", null)
+                        .WithMany("ProdutoEntrada")
                         .HasForeignKey("MapaEstoqueId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -180,27 +153,6 @@ namespace gerenciamento_estoque.Migrations
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("MapaEstoque");
-
-                    b.Navigation("Produto");
-                });
-
-            modelBuilder.Entity("gerenciamento_estoque.Models.ProdutoEntrada", b =>
-                {
-                    b.HasOne("gerenciamento_estoque.Models.EntradaMercadoria", "EntradaMercadoria")
-                        .WithMany("ProdutosEntrada")
-                        .HasForeignKey("EntradaMercadoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("gerenciamento_estoque.Models.Produto", "Produto")
-                        .WithMany()
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EntradaMercadoria");
 
                     b.Navigation("Produto");
                 });
@@ -212,7 +164,7 @@ namespace gerenciamento_estoque.Migrations
 
             modelBuilder.Entity("gerenciamento_estoque.Models.MapaEstoque", b =>
                 {
-                    b.Navigation("ProdutosArmazenados");
+                    b.Navigation("ProdutoEntrada");
                 });
 #pragma warning restore 612, 618
         }

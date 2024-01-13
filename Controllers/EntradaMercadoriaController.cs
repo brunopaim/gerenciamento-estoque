@@ -19,7 +19,9 @@ public class EntradaMercadoriaController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EntradaMercadoria>>> GetEntradasMercadoria()
     {
-        return await _context.EntradaMercadorias.ToListAsync();
+        return await _context.EntradaMercadorias
+            .Include(e => e.ProdutosEntrada).ThenInclude(pe => pe.Produto)
+            .ToListAsync();
     }
 
     [HttpGet("{id}")]
@@ -38,43 +40,27 @@ public class EntradaMercadoriaController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<EntradaMercadoria>> PostEntradaMercadoria(EntradaMercadoria entradaMercadoria)
     {
-        // Lógica para gerar um número de entrada (pode ser um timestamp neste exemplo)
-        entradaMercadoria.NumeroEntrada = GenerateEntryNumber();
-
-        // Configure a entrada de mercadoria e salve no banco de dados
-        _context.EntradaMercadorias.Add(entradaMercadoria);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction("GetEntradaMercadoria", new { id = entradaMercadoria.EntradaMercadoriaId }, entradaMercadoria);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutEntradaMercadoria(int id, EntradaMercadoria entradaMercadoria)
-    {
-        if (id != entradaMercadoria.EntradaMercadoriaId)
-        {
-            return BadRequest();
-        }
-
-        _context.Entry(entradaMercadoria).State = EntityState.Modified;
-
         try
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!EntradaMercadoriaExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
+            // Adicione a entrada de mercadoria ao contexto, mas ainda não a salve
+            _context.EntradaMercadorias.Add(entradaMercadoria);
 
-        return NoContent();
+            // Associe a entrada de mercadoria aos produtos e adicione-os ao contexto
+            foreach (var produtoEntrada in entradaMercadoria.ProdutosEntrada)
+            {
+                _context.ProdutosEntradas.Add(produtoEntrada);
+            }
+
+            // Agora, salve as alterações no banco de dados
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetEntradaMercadoria", new { id = entradaMercadoria.EntradaMercadoriaId }, entradaMercadoria);
+        }
+        catch (Exception ex)
+        {
+            // Trate qualquer exceção que possa ocorrer durante o processo
+            return BadRequest($"Erro ao processar a solicitação: {ex.Message}");
+        }
     }
 
     [HttpDelete("{id}")]
@@ -97,9 +83,4 @@ public class EntradaMercadoriaController : ControllerBase
         return _context.EntradaMercadorias.Any(e => e.EntradaMercadoriaId == id);
     }
 
-    private string GenerateEntryNumber()
-    {
-        // Gere um número de entrada com base no timestamp atual
-        return DateTime.Now.ToString("yyyyMMddHHmmssfff");
-    }
 }

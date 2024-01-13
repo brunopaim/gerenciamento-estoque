@@ -11,8 +11,8 @@ using gerenciamento_estoque.Data;
 namespace gerenciamento_estoque.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    [Migration("20240112190548_FixRelacionamentosTabela3")]
-    partial class FixRelacionamentosTabela3
+    [Migration("20240112231508_AddVolumeUtilizadoMapaEstoque")]
+    partial class AddVolumeUtilizadoMapaEstoque
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -67,6 +67,9 @@ namespace gerenciamento_estoque.Migrations
                     b.Property<int>("Linha")
                         .HasColumnType("int");
 
+                    b.Property<int>("VolumeUtilizado")
+                        .HasColumnType("int");
+
                     b.HasKey("MapaEstoqueId");
 
                     b.ToTable("MapaEstoque");
@@ -107,6 +110,10 @@ namespace gerenciamento_estoque.Migrations
 
                     b.Property<int>("MapaEstoqueId")
                         .HasColumnType("int");
+
+                    b.Property<string>("NumeroEntrada")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("Peso")
                         .HasColumnType("decimal(65,30)");

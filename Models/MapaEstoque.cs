@@ -7,6 +7,6 @@ namespace gerenciamento_estoque.Models
         public int Coluna { get; set; }
         public int CapacidadeMaxima { get; set; }
         // Relacionamento com ProdutosArmazenados (uma célula pode ter vários produtos)
-        public List<ProdutoArmazenado> ProdutosArmazenados { get; set; }
+        public List<ProdutoEntrada>? ProdutoEntrada { get; set; }
     }
 }

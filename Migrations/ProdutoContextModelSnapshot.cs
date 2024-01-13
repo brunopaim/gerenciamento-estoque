@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using gerenciamento_estoque.Data;
-using gerenciamento_estoque.Models;
 
 #nullable disable
 
@@ -107,6 +106,10 @@ namespace gerenciamento_estoque.Migrations
                     b.Property<int>("MapaEstoqueId")
                         .HasColumnType("int");
 
+                    b.Property<string>("NumeroEntrada")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<decimal>("Peso")
                         .HasColumnType("decimal(65,30)");
 
@@ -166,21 +169,6 @@ namespace gerenciamento_estoque.Migrations
                     b.Navigation("ProdutoEntrada");
                 });
 #pragma warning restore 612, 618
-
-            // Preencher o MapaEstoque com os valores padrões
-            for (int linha = 1; linha <= 5; linha++)
-            {
-                for (int coluna = 1; coluna <= 5; coluna++)
-                {
-                    modelBuilder.Entity<MapaEstoque>().HasData(new MapaEstoque
-                    {
-                        MapaEstoqueId = (linha - 1) * 5 + coluna,
-                        Linha = linha,
-                        Coluna = coluna,
-                        CapacidadeMaxima = 100
-                    });
-                }
-            }
         }
     }
 }

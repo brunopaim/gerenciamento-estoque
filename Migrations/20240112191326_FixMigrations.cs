@@ -6,46 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace gerenciamento_estoque.Migrations
 {
-    public partial class AllModels : Migration
+    public partial class FixMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<decimal>(
-                name: "Peso",
-                table: "Produtos",
-                type: "decimal(65,30)",
-                nullable: false,
-                defaultValue: 0m);
-
-            migrationBuilder.AddColumn<decimal>(
-                name: "ValorUnitario",
-                table: "Produtos",
-                type: "decimal(65,30)",
-                nullable: false,
-                defaultValue: 0m);
-
-            migrationBuilder.AddColumn<decimal>(
-                name: "VolumeCubico",
-                table: "Produtos",
-                type: "decimal(65,30)",
-                nullable: false,
-                defaultValue: 0m);
-
-            migrationBuilder.CreateTable(
-                name: "Categorias",
-                columns: table => new
-                {
-                    CategoriaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Descricao = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categorias", x => x.CategoriaId);
-                })
+            migrationBuilder.AlterDatabase()
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -55,6 +20,8 @@ namespace gerenciamento_estoque.Migrations
                     EntradaMercadoriaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     NumeroEntrada = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    NomeUsuario = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Data = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     TotalVolumeCubico = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
@@ -84,6 +51,24 @@ namespace gerenciamento_estoque.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Produtos",
+                columns: table => new
+                {
+                    ProdutoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Peso = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    VolumeCubico = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    ValorUnitario = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Produtos", x => x.ProdutoId);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "ProdutosEntradas",
                 columns: table => new
                 {
@@ -91,6 +76,7 @@ namespace gerenciamento_estoque.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ProdutoId = table.Column<int>(type: "int", nullable: false),
                     EntradaMercadoriaId = table.Column<int>(type: "int", nullable: false),
+                    MapaEstoqueId = table.Column<int>(type: "int", nullable: false),
                     Quantidade = table.Column<int>(type: "int", nullable: false),
                     VolumeCubico = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     Peso = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
@@ -106,56 +92,29 @@ namespace gerenciamento_estoque.Migrations
                         principalColumn: "EntradaMercadoriaId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProdutosEntradas_Produtos_ProdutoId",
-                        column: x => x.ProdutoId,
-                        principalTable: "Produtos",
-                        principalColumn: "ProdutoID",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "ProdutosArmazenados",
-                columns: table => new
-                {
-                    ProdutoArmazenadoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ProdutoId = table.Column<int>(type: "int", nullable: false),
-                    MapaEstoqueId = table.Column<int>(type: "int", nullable: false),
-                    QuantidadeArmazenada = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProdutosArmazenados", x => x.ProdutoArmazenadoId);
-                    table.ForeignKey(
-                        name: "FK_ProdutosArmazenados_MapaEstoque_MapaEstoqueId",
+                        name: "FK_ProdutosEntradas_MapaEstoque_MapaEstoqueId",
                         column: x => x.MapaEstoqueId,
                         principalTable: "MapaEstoque",
                         principalColumn: "MapaEstoqueId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProdutosArmazenados_Produtos_ProdutoId",
+                        name: "FK_ProdutosEntradas_Produtos_ProdutoId",
                         column: x => x.ProdutoId,
                         principalTable: "Produtos",
-                        principalColumn: "ProdutoID",
+                        principalColumn: "ProdutoId",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProdutosArmazenados_MapaEstoqueId",
-                table: "ProdutosArmazenados",
-                column: "MapaEstoqueId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProdutosArmazenados_ProdutoId",
-                table: "ProdutosArmazenados",
-                column: "ProdutoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProdutosEntradas_EntradaMercadoriaId",
                 table: "ProdutosEntradas",
                 column: "EntradaMercadoriaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProdutosEntradas_MapaEstoqueId",
+                table: "ProdutosEntradas",
+                column: "MapaEstoqueId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProdutosEntradas_ProdutoId",
@@ -166,31 +125,16 @@ namespace gerenciamento_estoque.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Categorias");
-
-            migrationBuilder.DropTable(
-                name: "ProdutosArmazenados");
-
-            migrationBuilder.DropTable(
                 name: "ProdutosEntradas");
+
+            migrationBuilder.DropTable(
+                name: "EntradaMercadorias");
 
             migrationBuilder.DropTable(
                 name: "MapaEstoque");
 
             migrationBuilder.DropTable(
-                name: "EntradaMercadorias");
-
-            migrationBuilder.DropColumn(
-                name: "Peso",
-                table: "Produtos");
-
-            migrationBuilder.DropColumn(
-                name: "ValorUnitario",
-                table: "Produtos");
-
-            migrationBuilder.DropColumn(
-                name: "VolumeCubico",
-                table: "Produtos");
+                name: "Produtos");
         }
     }
 }

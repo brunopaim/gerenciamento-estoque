@@ -9,11 +9,9 @@ namespace gerenciamento_estoque.Data
         {
         }
 
-        public DbSet<Categoria> Categorias {get; set;}
-        public DbSet<EntradaMercadoria> EntradaMercadorias {get; set;}
-        public DbSet<MapaEstoque> MapaEstoque {get; set;}
         public DbSet<Produto> Produtos {get; set;}
-        public DbSet<ProdutoArmazenado> ProdutosArmazenados {get; set;}
+        public DbSet<EntradaMercadoria> EntradaMercadorias {get; set;}
         public DbSet<ProdutoEntrada> ProdutosEntradas {get; set;}
+        public DbSet<MapaEstoque> MapaEstoque {get; set;}
     }
 }

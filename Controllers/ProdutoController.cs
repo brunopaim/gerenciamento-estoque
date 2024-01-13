@@ -44,35 +44,6 @@ public class ProdutoController : ControllerBase
         return CreatedAtAction(nameof(GetProduto), new { id = produto.ProdutoId }, produto);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduto(int id, Produto produto)
-    {
-        if (id != produto.ProdutoId)
-        {
-            return BadRequest();
-        }
-
-        _context.Entry(produto).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ProdutoExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
-    }
-
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduto(int id)
     {

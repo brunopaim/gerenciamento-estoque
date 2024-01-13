@@ -18,15 +18,15 @@ public class ProdutoEntradaController : ControllerBase
         _context = context;
     }
 
-    // GET: api/ProdutoEntrada
     [HttpGet]
     public async Task<IActionResult> GetProdutosEntrada()
     {
-        var produtosEntrada = await _context.ProdutosEntradas.ToListAsync();
+        var produtosEntrada = await _context.ProdutosEntradas
+            .Include(pe => pe.Produto)
+            .ToListAsync();
         return Ok(produtosEntrada);
     }
 
-    // GET: api/ProdutoEntrada/5
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProdutoEntrada(int id)
     {
@@ -40,7 +40,6 @@ public class ProdutoEntradaController : ControllerBase
         return Ok(produtoEntrada);
     }
 
-    // POST: api/ProdutoEntrada
     [HttpPost]
     public async Task<IActionResult> PostProdutoEntrada(ProdutoEntrada produtoEntrada)
     {
@@ -50,37 +49,6 @@ public class ProdutoEntradaController : ControllerBase
         return CreatedAtAction(nameof(GetProdutoEntrada), new { id = produtoEntrada.ProdutoEntradaId }, produtoEntrada);
     }
 
-    // PUT: api/ProdutoEntrada/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutProdutoEntrada(int id, ProdutoEntrada produtoEntrada)
-    {
-        if (id != produtoEntrada.ProdutoEntradaId)
-        {
-            return BadRequest();
-        }
-
-        _context.Entry(produtoEntrada).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ProdutoEntradaExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
-    }
-
-    // DELETE: api/ProdutoEntrada/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProdutoEntrada(int id)
     {
