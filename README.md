@@ -8,31 +8,28 @@ Este é um pequeno sistema de gerenciamento de estoque desenvolvido para facilit
 
 1. Configure a string de conexão no arquivo `appsettings.Development.json` com as informações do seu banco de dados MySQL:
 
-   ````json
+   ```json
    "ConnectionStrings": {
        "Default": "Server=localhost;Database=seu_banco_de_dados;User=root;Password=sua_senha;"
    }
-   ```3. Para iniciar o frontend, volte ao diretório raiz e execute:
-
-   ```bash
-   cd ..
-   ````
-
-2. Execute o seguinte comando para iniciar o frontend:
-
-   ```bash
-   npm start
    ```
 
-   O frontend estará disponível em [http://localhost:3000/](http://localhost:3000/).
+2. Execute os seguintes comandos no terminal para aplicar as migrações:
 
-3. Navegue até o diretório `ClientApp` no terminal:
+   ```bash
+   dotnet restore
+   dotnet ef database update
+   ```
+
+### Frontend (ReactJS)
+
+1. Navegue até o diretório `ClientApp` no terminal:
 
    ```bash
    cd ClientApp
    ```
 
-4. Execute o comando para instalar as dependências do frontend:
+2. Execute o comando para instalar as dependências do frontend:
 
    ```bash
    npm install
@@ -67,3 +64,5 @@ Antes de iniciar a instalação e execução do sistema, certifique-se de que o 
 - **[MySQL](https://www.mysql.com/)**: O sistema utiliza um banco de dados MySQL. Certifique-se de ter um servidor MySQL instalado e configurado.
 
 - **[Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)**: O Entity Framework Core é usado para mapear objetos .NET para o banco de dados MySQL. Certifique-se de que o Entity Framework Core está instalado.
+
+Inclua informações adicionais específicas, se necessário, para garantir que os usuários possam configurar e executar o sistema sem problemas. Isso ajuda a reduzir possíveis problemas de configuração e facilita a entrada dos usuários no uso do seu aplicativo.
