@@ -64,5 +64,3 @@ Antes de iniciar a instalação e execução do sistema, certifique-se de que o 
 - **[MySQL](https://www.mysql.com/)**: O sistema utiliza um banco de dados MySQL. Certifique-se de ter um servidor MySQL instalado e configurado.
 
 - **[Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)**: O Entity Framework Core é usado para mapear objetos .NET para o banco de dados MySQL. Certifique-se de que o Entity Framework Core está instalado.
-
-Inclua informações adicionais específicas, se necessário, para garantir que os usuários possam configurar e executar o sistema sem problemas. Isso ajuda a reduzir possíveis problemas de configuração e facilita a entrada dos usuários no uso do seu aplicativo.
