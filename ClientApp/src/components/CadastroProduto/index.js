@@ -1,4 +1,7 @@
+// React
 import React, { useEffect, useState } from "react";
+
+// Material UI
 import {
   Button,
   Dialog,
@@ -8,10 +11,12 @@ import {
   TextField,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import useProdutoStore from "../../store"; // Importa o estado global de produtos
+
+// Zustand
+import useGlobalStore from "../../store";
 
 const CadastroProdutos = () => {
-  const { produtos, setProdutos, adicionarProduto } = useProdutoStore();
+  const { produtos, setProdutos, adicionarProduto } = useGlobalStore();
 
   const [openDialog, setOpenDialog] = useState(false);
   const [novoProduto, setNovoProduto] = useState({
@@ -83,23 +88,25 @@ const CadastroProdutos = () => {
       </h2>
       <br />
       <p>Lista de Produtos já cadastrados:</p>
-
-      <ul>
-        {produtos.map((produto) => (
-          <li key={produto.produtoId}>
-            <strong>Nome:</strong> {produto.nome}
-            <br />
-            <strong>Peso (UN/Kg):</strong> {produto.peso}
-            <br />
-            <strong>Volume Cúbico (UN):</strong> {produto.volumeCubico}
-            <br />
-            <strong>Valor Unitário:</strong> {produto.valorUnitario}
-            <br />
-            <hr />
-          </li>
-        ))}
-      </ul>
-
+      {produtos.length > 0 ? (
+        <ul>
+          {produtos?.map((produto) => (
+            <li key={produto.produtoId}>
+              <strong>Nome:</strong> {produto.nome}
+              <br />
+              <strong>Peso (UN/Kg):</strong> {produto.peso}
+              <br />
+              <strong>Volume Cúbico (UN):</strong> {produto.volumeCubico}
+              <br />
+              <strong>Valor Unitário:</strong> {"R$" + produto.valorUnitario}
+              <br />
+              <hr />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Sem Produtos cadastrados!</p>
+      )}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Novo Produto</DialogTitle>
         <DialogContent>

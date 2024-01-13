@@ -1,7 +1,8 @@
 // Material UI
 import HomeIcon from "@mui/icons-material/Home";
 import AddIcon from "@mui/icons-material/Add";
-import ShoppingCartIcon from "@mui/icons-material/Archive";
+import ArquiveIcon from "@mui/icons-material/Archive";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
 
 export const sidebarItems = [
   {
@@ -19,7 +20,13 @@ export const sidebarItems = [
   {
     id: "entrada-mercadoria",
     label: "Entrada de Mercadoria",
-    icon: <ShoppingCartIcon />,
+    icon: <ArquiveIcon />,
     url: "/entrada-mercadoria",
+  },
+  {
+    id: "mapa-estoque",
+    label: "Mapas Estoque",
+    icon: <Inventory2Icon />,
+    url: "/mapa-estoque",
   },
 ];
