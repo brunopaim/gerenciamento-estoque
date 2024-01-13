@@ -8,31 +8,28 @@ Este é um pequeno sistema de gerenciamento de estoque desenvolvido para facilit
 
 1. Configure a string de conexão no arquivo `appsettings.Development.json` com as informações do seu banco de dados MySQL:
 
-   ````json
+   ```json
    "ConnectionStrings": {
        "Default": "Server=localhost;Database=seu_banco_de_dados;User=root;Password=sua_senha;"
    }
-   ```3. Para iniciar o frontend, volte ao diretório raiz e execute:
-
-   ```bash
-   cd ..
-   ````
-
-2. Execute o seguinte comando para iniciar o frontend:
-
-   ```bash
-   npm start
    ```
 
-   O frontend estará disponível em [http://localhost:3000/](http://localhost:3000/).
+2. Execute os seguintes comandos no terminal para aplicar as migrações:
 
-3. Navegue até o diretório `ClientApp` no terminal:
+   ```bash
+   dotnet restore
+   dotnet ef database update
+   ```
+
+### Frontend (ReactJS)
+
+1. Navegue até o diretório `ClientApp` no terminal:
 
    ```bash
    cd ClientApp
    ```
 
-4. Execute o comando para instalar as dependências do frontend:
+2. Execute o comando para instalar as dependências do frontend:
 
    ```bash
    npm install
