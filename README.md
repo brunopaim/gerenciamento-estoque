@@ -14,10 +14,17 @@ Este é um pequeno sistema de gerenciamento de estoque desenvolvido para facilit
    }
    ```
 
-2. Execute os seguintes comandos no terminal para aplicar as migrações:
+### Backend (.NET 6)
+
+1. Antes de rodar o projeto, instalar o **[EF Tools](https://learn.microsoft.com/en-us/ef/core/get-started/overview/install#get-the-entity-framework-core-tools)**:
 
    ```bash
-   dotnet restore
+   dotnet tool install --global dotnet-ef
+   ```
+
+2. Execute o seguinte comando no terminal rodar as migrations.
+
+   ```bash
    dotnet ef database update
    ```
 
