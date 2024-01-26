@@ -25,19 +25,21 @@ const CustomDialog = ({ open, onClose, selectedCell }) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>
-        Produtos na Célula - {selectedCell.coluna} x {selectedCell.linha}
+        Produtos na Célula - {selectedCell.Coluna} x {selectedCell.Linha}
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
           <ul>
-            {selectedCell.produtoEntrada.map((produto) => (
-              <li key={produto.produtoEntradaId}>
-                Código: {produto.produtoId}
-                <br /> Nome: {produto.produto?.nome}
+            {selectedCell.ProdutoEstoque.map((produto) => (
+              <li key={produto.ProdutoEntrada.ProdutoEntradaId}>
+                Código: {produto.ProdutoEntrada.ProdutoId}
+                <br /> Nome: {produto.ProdutoEntrada.Produto?.Nome}
                 <br />
-                Quantidade: {produto.quantidade}
+                Quantidade: {produto.ProdutoEntrada.Quantidade}
                 <br />
-                Nº Entrada: #{produto.numeroEntrada}
+                Volume Armazenado: {produto.VolumeArmazenado}
+                <br />
+                Nº Entrada: #{produto.ProdutoEntrada.NumeroEntrada}
               </li>
             ))}
           </ul>
@@ -58,10 +60,11 @@ const CustomDialog = ({ open, onClose, selectedCell }) => {
 };
 
 export const MapaComponent = () => {
-  const { mapaEstoque, setMapaEstoque } = useGlobalStore();
+  const { mapaEstoque, setMapaEstoque, volumeTotalLivre, setVolumeTotalLivre } =
+    useGlobalStore();
 
   const [volumeTotalUtilizado, setVolumeTotalUtilizado] = useState(null);
-  const [volumeTotalLivre, setVolumeTotalLivre] = useState(null);
+  //const [volumeTotalLivre, setVolumeTotalLivre] = useState(null);
   const [selectedCell, setSelectedCell] = useState(null);
 
   useEffect(() => {
@@ -69,11 +72,11 @@ export const MapaComponent = () => {
       .then((response) => response.json())
       .then((data) => {
         const newMapa = data.map((cell) => {
-          const volumeUtilizado = cell.produtoEntrada.reduce(
-            (total, produto) => total + produto.volumeCubico,
+          const volumeUtilizado = cell.ProdutoEstoque.reduce(
+            (total, produto) => total + produto.VolumeArmazenado,
             0
           );
-          const volumeLivre = cell.capacidadeMaxima - volumeUtilizado;
+          const volumeLivre = cell.CapacidadeMaxima - volumeUtilizado;
 
           return { ...cell, volumeLivre, volumeUtilizado };
         });
@@ -81,8 +84,8 @@ export const MapaComponent = () => {
         const volumeUtilizado = newMapa.reduce((total, cell) => {
           return (
             total +
-            cell.produtoEntrada.reduce(
-              (subtotal, produto) => subtotal + produto.volumeCubico,
+            cell.ProdutoEstoque.reduce(
+              (subtotal, produto) => subtotal + produto.VolumeArmazenado,
               0
             )
           );
@@ -93,9 +96,9 @@ export const MapaComponent = () => {
         const volumeLivre = newMapa.reduce((total, cell) => {
           return (
             total +
-            (cell.capacidadeMaxima -
-              cell.produtoEntrada.reduce(
-                (subtotal, produto) => subtotal + produto.volumeCubico,
+            (cell.CapacidadeMaxima -
+              cell.ProdutoEstoque.reduce(
+                (subtotal, produto) => subtotal + produto.VolumeArmazenado,
                 0
               ))
           );
@@ -110,9 +113,9 @@ export const MapaComponent = () => {
 
   const handleClick = (linha, coluna) => {
     const cell = mapaEstoque.find(
-      (cell) => cell.linha === linha && cell.coluna === coluna
+      (cell) => cell.Linha === linha && cell.Coluna === coluna
     );
-    if (cell && cell.produtoEntrada.length > 0) {
+    if (cell && cell.ProdutoEstoque.length > 0) {
       setSelectedCell(cell);
     }
   };
@@ -121,14 +124,14 @@ export const MapaComponent = () => {
     setSelectedCell(null);
   };
 
-  const renderCell = (capacidadeMaxima, produtoEntrada, linha, coluna) => {
+  const renderCell = (capacidadeMaxima, produtoEstoque, linha, coluna) => {
     let colorCell = "green";
     let cursor = "default";
 
-    if (produtoEntrada.length > 0) {
+    if (produtoEstoque.length > 0) {
       let totalOcupado = 0;
-      produtoEntrada.map((data) => {
-        totalOcupado += data.volumeCubico;
+      produtoEstoque.map((data) => {
+        totalOcupado += data.VolumeArmazenado;
       });
       cursor = "pointer";
       colorCell = totalOcupado < capacidadeMaxima ? "yellow" : "red";
@@ -149,7 +152,7 @@ export const MapaComponent = () => {
         }}
         onClick={() => handleClick(linha, coluna)}
       >
-        {produtoEntrada.length > 0 && "X"}
+        {produtoEstoque.length > 0 && "X"}
       </div>
     );
   };
@@ -158,9 +161,9 @@ export const MapaComponent = () => {
     return (
       <div key={row} style={{ display: "flex" }}>
         {mapaEstoque
-          .filter((cell) => cell.linha === row)
-          .map(({ coluna, capacidadeMaxima, produtoEntrada }) =>
-            renderCell(capacidadeMaxima, produtoEntrada, row, coluna)
+          .filter((cell) => cell.Linha === row)
+          .map(({ Coluna, CapacidadeMaxima, ProdutoEstoque }) =>
+            renderCell(CapacidadeMaxima, ProdutoEstoque, row, Coluna)
           )}
       </div>
     );
@@ -177,7 +180,9 @@ export const MapaComponent = () => {
     <div>
       <p align="justify">
         O estoque padrão é composto por uma matriz 5x5 e cada célula armazena um
-        volume máximo de até 100.
+        volume máximo de até 1000. Caso seja armazenado um produto com volume
+        cúbico maior que o volume máximo da célula, ele vai ser armazenado em
+        mais de uma célula.
       </p>
       <p>Verde = Vazio | Amarelo = Ocupada | Vermelho = Cheio</p>
       <div>{renderMatrix()}</div>

@@ -27,6 +27,8 @@ const useGlobalStore = create((set) => ({
   // Mapa Estoque
   mapaEstoque: [],
   setMapaEstoque: (novoEstoque) => set({ mapaEstoque: novoEstoque }),
+  volumeTotalLivre: 0,
+  setVolumeTotalLivre: (novoVolume) => set({ volumeTotalLivre: novoVolume }),
 
   // Usuário
   nomeUsuario: "",
