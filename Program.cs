@@ -49,7 +49,7 @@ using (var scope = app.Services.CreateScope())
                 {
                     Linha = linha,
                     Coluna = coluna,
-                    CapacidadeMaxima = 100
+                    CapacidadeMaxima = 1000
                 });
             }
         }
