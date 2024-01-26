@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace gerenciamento_estoque.Migrations
 {
-    public partial class FixMigrations : Migration
+    public partial class FixFinalMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -75,8 +75,9 @@ namespace gerenciamento_estoque.Migrations
                     ProdutoEntradaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ProdutoId = table.Column<int>(type: "int", nullable: false),
+                    NumeroEntrada = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     EntradaMercadoriaId = table.Column<int>(type: "int", nullable: false),
-                    MapaEstoqueId = table.Column<int>(type: "int", nullable: false),
                     Quantidade = table.Column<int>(type: "int", nullable: false),
                     VolumeCubico = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     Peso = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
@@ -92,16 +93,38 @@ namespace gerenciamento_estoque.Migrations
                         principalColumn: "EntradaMercadoriaId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProdutosEntradas_MapaEstoque_MapaEstoqueId",
+                        name: "FK_ProdutosEntradas_Produtos_ProdutoId",
+                        column: x => x.ProdutoId,
+                        principalTable: "Produtos",
+                        principalColumn: "ProdutoId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ProdutosEstoque",
+                columns: table => new
+                {
+                    ProdutoEstoqueId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ProdutoEntradaId = table.Column<int>(type: "int", nullable: false),
+                    MapaEstoqueId = table.Column<int>(type: "int", nullable: false),
+                    VolumeArmazenado = table.Column<float>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProdutosEstoque", x => x.ProdutoEstoqueId);
+                    table.ForeignKey(
+                        name: "FK_ProdutosEstoque_MapaEstoque_MapaEstoqueId",
                         column: x => x.MapaEstoqueId,
                         principalTable: "MapaEstoque",
                         principalColumn: "MapaEstoqueId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProdutosEntradas_Produtos_ProdutoId",
-                        column: x => x.ProdutoId,
-                        principalTable: "Produtos",
-                        principalColumn: "ProdutoId",
+                        name: "FK_ProdutosEstoque_ProdutosEntradas_ProdutoEntradaId",
+                        column: x => x.ProdutoEntradaId,
+                        principalTable: "ProdutosEntradas",
+                        principalColumn: "ProdutoEntradaId",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -112,26 +135,34 @@ namespace gerenciamento_estoque.Migrations
                 column: "EntradaMercadoriaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProdutosEntradas_MapaEstoqueId",
-                table: "ProdutosEntradas",
-                column: "MapaEstoqueId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProdutosEntradas_ProdutoId",
                 table: "ProdutosEntradas",
                 column: "ProdutoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProdutosEstoque_MapaEstoqueId",
+                table: "ProdutosEstoque",
+                column: "MapaEstoqueId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProdutosEstoque_ProdutoEntradaId",
+                table: "ProdutosEstoque",
+                column: "ProdutoEntradaId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ProdutosEstoque");
+
+            migrationBuilder.DropTable(
+                name: "MapaEstoque");
+
+            migrationBuilder.DropTable(
                 name: "ProdutosEntradas");
 
             migrationBuilder.DropTable(
                 name: "EntradaMercadorias");
-
-            migrationBuilder.DropTable(
-                name: "MapaEstoque");
 
             migrationBuilder.DropTable(
                 name: "Produtos");
