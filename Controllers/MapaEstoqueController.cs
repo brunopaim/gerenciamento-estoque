@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using gerenciamento_estoque.Data;
 using gerenciamento_estoque.Models;
+using Newtonsoft.Json;
 
 namespace gerenciamento_estoque.Controllers;
 
@@ -19,9 +20,18 @@ public class MapaEstoqueController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MapaEstoque>>> GetMapaEstoque()
     {
-        return await _context.MapaEstoque
-            .Include(m => m.ProdutoEntrada)
-                .ThenInclude(pe => pe.Produto)
+
+        var settings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+
+         var mapaEstoque = await _context.MapaEstoque
+            .Include(m => m.ProdutoEstoque)
+                .ThenInclude(pe => pe.ProdutoEntrada)
+                    .ThenInclude(p => p.Produto)
             .ToListAsync();
-    }
+
+        var json = JsonConvert.SerializeObject(mapaEstoque, settings);
+        return Ok(json);    }
 }

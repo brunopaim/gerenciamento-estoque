@@ -49,6 +49,11 @@ public class EntradaMercadoriaController : ControllerBase
             foreach (var produtoEntrada in entradaMercadoria.ProdutosEntrada)
             {
                 _context.ProdutosEntradas.Add(produtoEntrada);
+
+                foreach (var produtoEstoque in produtoEntrada.ProdutoEstoque)
+                {
+                    _context.ProdutosEstoque.Add(produtoEstoque);
+                }
             }
 
             // Agora, salve as alterações no banco de dados

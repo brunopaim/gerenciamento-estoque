@@ -12,6 +12,7 @@ namespace gerenciamento_estoque.Data
         public DbSet<Produto> Produtos {get; set;}
         public DbSet<EntradaMercadoria> EntradaMercadorias {get; set;}
         public DbSet<ProdutoEntrada> ProdutosEntradas {get; set;}
+        public DbSet<ProdutoEstoque> ProdutosEstoque {get; set;}
         public DbSet<MapaEstoque> MapaEstoque {get; set;}
     }
 }
